@@ -36,14 +36,14 @@ func StartServer() {
 			return decoded, nil
 		},
 	})
-
 	r.HandleFunc("/ping", PingHandler)
 	r.Handle("/secured/ping", negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(http.HandlerFunc(SecuredPingHandler)),
 	))
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("/Users/madhavjha/src/webapp/client/")))
 	http.Handle("/", r)
-	http.ListenAndServe(":3001", nil)
+	http.ListenAndServe(":3000", nil)
 }
 
 type Response struct {

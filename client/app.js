@@ -31,9 +31,22 @@ $(document).ready(function() {
     });
 
 
-    document.getElementById('btn-api').addEventListener('click', function() {
-        // Just call your API here. The header will be sent
-    })
-
-
+  document.getElementById('btn-api').addEventListener('click', function() {
+    // Just call your API here. The header will be sent
+    alert("Hello real world");
+    $.ajax({
+      url: "/secured/ping",
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("Authorization", 'Bearer ' + localStorage.getItem('userToken'));
+      },
+      error: function(err) {
+        // error handler
+        alert(JSON.stringify(err));
+      },
+      success: function(data) {
+        // success handler
+        alert(JSON.stringify(data));
+      }
+    });
+  });
 });
