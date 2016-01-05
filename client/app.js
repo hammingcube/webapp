@@ -1,3 +1,9 @@
+function showLoggedInState(nickname) {
+    document.getElementById('btn-login').textContent = 'Log out';
+    document.getElementById('logged-in-box').style.display = 'inline';
+    document.getElementById('nick').textContent = nickname;
+}
+
 $(document).ready(function() {
     var lock = new Auth0Lock(
         // These properties are set in auth0-variables.js
@@ -6,8 +12,20 @@ $(document).ready(function() {
     );
 
     var userProfile;
+    var nickname = sessionStorage.getItem('nickname');
+    //alert(nickname);
+    if(nickname) {
+      showLoggedInState(nickname);
+    }
 
     document.getElementById('btn-login').addEventListener('click', function() {
+      if(this.textContent == "Log out") {
+        localStorage.clear();
+        sessionStorage.clear();
+        document.getElementById('btn-login').textContent = 'Log in';
+        document.getElementById('logged-in-box').style.display = 'none';
+        return
+      }
       lock.show(function(err, profile, token) {
         if (err) {
           // Error callback
@@ -21,11 +39,8 @@ $(document).ready(function() {
 
           // Save the profile
           userProfile = profile;
-
-          document.getElementById('login-box').style.display = 'none';
-          document.getElementById('logged-in-box').style.display = 'inline';
-
-          document.getElementById('nick').textContent = profile.nickname;
+          sessionStorage.setItem('nickname', userProfile.nickname);
+          showLoggedInState(userProfile.nickname);
         }
       });
     });
